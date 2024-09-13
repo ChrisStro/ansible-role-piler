@@ -1,0 +1,24 @@
+- name: Add bashclub gpg key
+  ansible.builtin.get_url:
+    url: https://apt.bashclub.org/gpg/bashclub.pub
+    # dest: /usr/share/keyrings/bashclub-keyring.gpg
+    dest: /etc/apt/trusted.gpg.d/bashclub-keyring.asc
+    mode: 644
+
+- name: Add bashclub-manticore repository
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/trusted.gpg.d/bashclub-keyring.asc] https://apt.bashclub.org/manticore bookworm main
+    filename: /etc/apt/sources.list.d/bashclub-manticore.list
+    state: present
+
+- name: Add bashclub-manticore repository
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/trusted.gpg.d/bashclub-keyring.asc] https://apt.bashclub.org/release bookworm main
+    filename: /etc/apt/sources.list.d/bashclub-release.list
+    state: present
+
+- name: Install piler from bashclub repo
+  ansible.builtin.apt:
+    name: piler
+    install_recommends: false
+    update_cache: true
